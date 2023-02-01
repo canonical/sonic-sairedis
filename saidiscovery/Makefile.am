@@ -14,3 +14,8 @@ saidiscovery_CPPFLAGS = $(CODE_COVERAGE_CPPFLAGS)
 saidiscovery_CXXFLAGS = $(DBGFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS_COMMON) $(CODE_COVERAGE_CXXFLAGS)
 saidiscovery_LDADD = -lhiredis -lswsscommon $(top_srcdir)/syncd/libSyncd.a $(SAILIB) -lpthread \
 					 -L$(top_srcdir)/meta/.libs -lsaimetadata -lsaimeta -lzmq $(CODE_COVERAGE_LIBS)
+if GCOV_ENABLED
+#saidiscovery_LDADD += -lgcovpreload
+saidiscovery_LDADD += -L$(top_srcdir)/gcovpreload/.libs/ -lgcovpreload
+saidiscovery_LDFLAGS = -Wl,--no-as-needed,-Bdynamic
+endif

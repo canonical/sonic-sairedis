@@ -7,3 +7,8 @@ saidump_CPPFLAGS = $(CODE_COVERAGE_CPPFLAGS)
 saidump_CXXFLAGS = $(DBGFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS_COMMON) $(CODE_COVERAGE_CXXFLAGS)
 saidump_LDADD = -lhiredis -lswsscommon -lpthread -L$(top_srcdir)/meta/.libs -lsaimetadata -lsaimeta \
 				-L$(top_srcdir)/lib/.libs -lsairedis -lzmq $(CODE_COVERAGE_LIBS)
+if GCOV_ENABLED
+#saidump_LDADD += -lgcovpreload
+saidump_LDADD += -L$(top_srcdir)/gcovpreload/.libs/ -lgcovpreload
+saidump_LDFLAGS = -Wl,--no-as-needed,-Bdynamic
+endif

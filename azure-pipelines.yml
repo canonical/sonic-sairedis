@@ -56,6 +56,7 @@ stages:
       swss_common_artifact_name: sonic-swss-common
       artifact_name: sonic-sairedis
       syslog_artifact_name: sonic-sairedis.syslog
+      gcov_unittest_artifact_name: gcov_unitest.info
       run_unit_test: true
       archive_gcov: true
       debian_version: ${{ parameters.debian_version }}
@@ -88,6 +89,7 @@ stages:
       swss_common_artifact_name: sonic-swss-common.armhf
       artifact_name: sonic-sairedis.armhf
       syslog_artifact_name: sonic-sairedis.syslog.armhf
+      gcov_unittest_artifact_name: gcov_unitest.info
       debian_version: ${{ parameters.debian_version }}
 
   - template: .azure-pipelines/build-template.yml
@@ -99,11 +101,12 @@ stages:
       swss_common_artifact_name: sonic-swss-common.arm64
       artifact_name: sonic-sairedis.arm64
       syslog_artifact_name: sonic-sairedis.syslog.arm64
+      gcov_unittest_artifact_name: gcov_unitest.info
       debian_version: ${{ parameters.debian_version }}
 
 - stage: BuildSwss
   dependsOn: Build
-  condition: succeeded('Build')
+  condition: always()
   jobs:
   - template: .azure-pipelines/build-swss-template.yml
     parameters:
@@ -116,7 +119,7 @@ stages:
 
 - stage: BuildDocker
   dependsOn: BuildSwss
-  condition: succeeded('BuildSwss')
+  condition: always()
   jobs:
   - template: .azure-pipelines/build-docker-sonic-vs-template.yml
     parameters:
@@ -146,6 +149,24 @@ stages:
   - template: .azure-pipelines/test-docker-sonic-vs-template.yml
     parameters:
       log_artifact_name: log
+      gcov_artifact_name: sonic-gcov
+      sonic_slave: sonic-slave-buster
+      archive_gcov: true
+
+- stage: Gcov
+  dependsOn: Test
+  condition: always()
+  jobs:
+  - template: .azure-pipelines/gcov.yml
+    parameters:
+      arch: amd64
+      sonic_slave: sonic-slave-buster
+      swss_common_artifact_name: sonic-swss-common
+      sairedis_artifact_name: sonic-sairedis
+      gcov_unittest_artifact_name: gcov_unitest.info
+      swss_artifact_name: sonic-swss
+      artifact_name: sonic-gcov
+      archive_gcov: true
 
 - stage: TestAsan
   dependsOn: BuildDockerAsan

@@ -76,6 +76,12 @@ if SONIC_ASIC_PLATFORM_BROADCOM
 libSyncd_a_CXXFLAGS += -DMDIO_ACCESS_USE_NPU
 endif
 
+if GCOV_ENABLED
+#syncd_LDADD += -lgcovpreload
+syncd_LDADD += -L$(top_srcdir)/gcovpreload/.libs/ -lgcovpreload
+syncd_LDFLAGS += -Wl,--no-as-needed,-Bdynamic
+endif
+
 libSyncdRequestShutdown_a_SOURCES = \
 									RequestShutdown.cpp \
 									RequestShutdownCommandLineOptions.cpp \
@@ -94,5 +100,4 @@ tests_CXXFLAGS = $(DBGFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS_COMMON)
 tests_LDFLAGS = -Wl,-rpath,$(top_srcdir)/lib/.libs -Wl,-rpath,$(top_srcdir)/meta/.libs
 tests_LDADD = libSyncd.a -lhiredis -lswsscommon -lpthread -L$(top_srcdir)/lib/.libs -lsairedis \
 			  -L$(top_srcdir)/meta/.libs -lsaimetadata -lsaimeta -lzmq $(CODE_COVERAGE_LIBS)
-
 TESTS = tests

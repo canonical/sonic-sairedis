@@ -19,3 +19,7 @@ RUN dpkg -i /debs/syncd-vs_1.0.0_amd64.deb
 RUN if [ "$need_dbg" = "y" ] ; then dpkg -i /debs/syncd-vs-dbg_1.0.0_amd64.deb ; fi
 
 RUN dpkg -i /debs/swss_1.0.0_amd64.deb
+
+RUN apt-get update
+
+RUN apt-get -y install lcov
