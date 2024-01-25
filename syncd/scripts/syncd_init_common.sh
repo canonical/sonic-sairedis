@@ -418,6 +418,11 @@ config_syncd_xsight()
     CMD_ARGS+=" -p $HWSKU_DIR/sai.profile"
 }
 
+config_syncd_clounix()
+{
+    CMD_ARGS+=" -p $HWSKU_DIR/sai.profile -l"
+}
+
 config_syncd()
 {
     check_warm_boot
@@ -449,6 +454,8 @@ config_syncd()
         config_syncd_nvidia_bluefield
     elif [ "$SONIC_ASIC_TYPE" == "xsight" ]; then
         config_syncd_xsight
+    elif [ "$SONIC_ASIC_TYPE" == "clounix" ]; then
+        config_syncd_clounix
     else
         echo "Unknown ASIC type $SONIC_ASIC_TYPE"
         exit 1
