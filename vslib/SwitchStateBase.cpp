@@ -2021,6 +2021,26 @@ sai_status_t SwitchStateBase::refresh_bridge_port_list(
     return SAI_STATUS_NOT_IMPLEMENTED;
 }
 
+sai_status_t SwitchStateBase::refresh_poe_device_list(
+        _In_ const sai_attr_metadata_t *meta)
+{
+    SWSS_LOG_ENTER();
+
+    SWSS_LOG_ERROR("implement in child class");
+
+    return SAI_STATUS_NOT_IMPLEMENTED;
+}
+
+sai_status_t SwitchStateBase::refresh_port_poe_port_id(
+        _In_ sai_object_id_t port_id)
+{
+    SWSS_LOG_ENTER();
+
+    SWSS_LOG_ERROR("implement in child class");
+
+    return SAI_STATUS_NOT_IMPLEMENTED;
+}
+
 sai_status_t SwitchStateBase::refresh_vlan_member_list(
         _In_ const sai_attr_metadata_t *meta,
         _In_ sai_object_id_t vlan_id)
@@ -2396,6 +2416,9 @@ sai_status_t SwitchStateBase::refresh_read_only(
 
             case SAI_SWITCH_ATTR_SUPPORTED_OBJECT_TYPE_LIST:
                 return SAI_STATUS_SUCCESS;
+
+            case SAI_SWITCH_ATTR_POE_DEVICE_LIST:
+                return refresh_poe_device_list(meta);
         }
     }
 
@@ -2436,6 +2459,9 @@ sai_status_t SwitchStateBase::refresh_read_only(
 
             case SAI_PORT_ATTR_OPER_SPEED:
                 return refresh_port_oper_speed(object_id);
+
+            case SAI_PORT_ATTR_POE_PORT_ID:
+                return refresh_port_poe_port_id(object_id);
         }
     }
 
