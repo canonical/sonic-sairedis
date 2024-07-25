@@ -148,9 +148,6 @@ namespace saivs
                     _In_ const sai_attr_metadata_t *meta,
                     _In_ sai_object_id_t bridge_id);
 
-            virtual sai_status_t refresh_poe_device_list(
-                    _In_ const sai_attr_metadata_t *meta);
-
             virtual sai_status_t refresh_port_poe_port_id(
                     _In_ sai_object_id_t port_id);
 

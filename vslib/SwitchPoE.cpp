@@ -50,8 +50,9 @@ sai_status_t SwitchPoE::set_switch_default_attributes()
     };
     sai_attribute_t attr;
 
-    attr.id = SAI_SWITCH_ATTR_NUMBER_OF_ACTIVE_PORTS;
-    attr.value.u32 = 0;
+    attr.id = SAI_SWITCH_ATTR_POE_DEVICE_LIST;
+    attr.value.objlist.count = 0;
+    attr.value.objlist.list = NULL;
     CHECK_STATUS(set(SAI_OBJECT_TYPE_SWITCH, m_switch_id, &attr));
 
     attr.id = SAI_SWITCH_ATTR_WARM_RECOVER;
@@ -139,6 +140,16 @@ sai_status_t SwitchPoE::createPoeDevice(
         attr.value.u32 = SAI_POE_DEVICE_LIMIT_MODE_CLASS;
         CHECK_STATUS(set(SAI_OBJECT_TYPE_POE_DEVICE, object_id, &attr));
     }
+
+    /* update the list of all poe devices on switch */
+    m_poe_device_list.push_back(object_id);
+
+    auto device_count = (uint32_t)m_poe_device_list.size();
+    attr.id = SAI_SWITCH_ATTR_POE_DEVICE_LIST;
+    attr.value.objlist.count = device_count;
+    attr.value.objlist.list = m_poe_device_list.data();
+    CHECK_STATUS(set(SAI_OBJECT_TYPE_SWITCH, switch_id, &attr));
+
     return SAI_STATUS_SUCCESS;
 }
 
@@ -185,15 +196,6 @@ sai_status_t SwitchPoE::refresh_read_only(
         _In_ sai_object_id_t object_id)
 {
     SWSS_LOG_ENTER();
-
-    if (meta->objecttype == SAI_OBJECT_TYPE_SWITCH)
-    {
-        switch (meta->attrid)
-        {
-            case SAI_SWITCH_ATTR_POE_DEVICE_LIST:
-                return refresh_poe_device_list(meta);
-        }
-    }
 
     sai_attribute_t attr;
     attr.id = meta->attrid;
@@ -291,32 +293,6 @@ sai_status_t SwitchPoE::refresh_read_only(
     SWSS_LOG_WARN("need to recalculate RO: %s", meta->attridname);
 
     return SAI_STATUS_NOT_IMPLEMENTED;
-}
-
-sai_status_t SwitchPoE::refresh_poe_device_list(
-        _In_ const sai_attr_metadata_t *meta)
-{
-    SWSS_LOG_ENTER();
-
-    sai_attribute_t attr;
-    m_poe_device_list.clear();
-
-    for (const auto& it: m_objectHash.at(SAI_OBJECT_TYPE_POE_DEVICE))
-    {
-        sai_object_id_t device_oid;
-        sai_deserialize_object_id(it.first, device_oid);
-        m_poe_device_list.push_back(device_oid);
-    }
-
-    auto device_count = (uint32_t)m_poe_device_list.size();
-    attr.id = SAI_SWITCH_ATTR_POE_DEVICE_LIST;
-    attr.value.objlist.count = device_count;
-    attr.value.objlist.list = m_poe_device_list.data();
-
-    CHECK_STATUS(set(SAI_OBJECT_TYPE_SWITCH, m_switch_id, &attr));
-
-    SWSS_LOG_NOTICE("refreshed poe device list, current device number: %lu", device_count);
-    return SAI_STATUS_SUCCESS;
 }
 
 sai_status_t SwitchPoE::refresh_poe_pse_list(
