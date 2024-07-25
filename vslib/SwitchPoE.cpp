@@ -141,7 +141,7 @@ sai_status_t SwitchPoE::createPoeDevice(
         CHECK_STATUS(set(SAI_OBJECT_TYPE_POE_DEVICE, object_id, &attr));
     }
 
-    /* update the list of all poe devices on switch */
+    /* update the list of all POE devices on switch */
     m_poe_device_list.push_back(object_id);
 
     auto device_count = (uint32_t)m_poe_device_list.size();
@@ -316,7 +316,7 @@ sai_status_t SwitchPoE::refresh_poe_pse_list(
 
     CHECK_STATUS(set(SAI_OBJECT_TYPE_POE_DEVICE, poe_device_id, &attr));
 
-    SWSS_LOG_NOTICE("refreshed poe pse list, current pse number: %u", pse_count);
+    SWSS_LOG_NOTICE("refreshed POE PSE list, current PSE number: %u", pse_count);
     return SAI_STATUS_SUCCESS;
 }
 
@@ -341,6 +341,6 @@ sai_status_t SwitchPoE::refresh_poe_port_list(
 
     CHECK_STATUS(set(SAI_OBJECT_TYPE_POE_DEVICE, poe_device_id, &attr));
 
-    SWSS_LOG_NOTICE("refreshed poe port list, current port number: %u", port_count);
+    SWSS_LOG_NOTICE("refreshed POE port list, current port number: %u", port_count);
     return SAI_STATUS_SUCCESS;
 }

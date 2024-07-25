@@ -86,7 +86,7 @@ TEST(SwitchPoE, refresh_read_only)
     EXPECT_EQ(sw.get(SAI_OBJECT_TYPE_SWITCH, strSwitchId, 1, attrs), SAI_STATUS_SUCCESS);
     EXPECT_EQ(attrs[0].value.objlist.count, 0);
 
-    // create poe device, pse, and 2 poe ports
+    // create POE device, PSE, and 2 POE ports
 
     // device
     sai_object_id_t devId = mgr->allocateNewObjectId(SAI_OBJECT_TYPE_POE_DEVICE, switchId);
@@ -95,7 +95,7 @@ TEST(SwitchPoE, refresh_read_only)
     strncpy(attrs[0].value.chardata, "hw info", sizeof(attrs[0].value.chardata) - 1);
     EXPECT_EQ(sw.create(SAI_OBJECT_TYPE_POE_DEVICE, strDevId, switchId, 1, attrs), SAI_STATUS_SUCCESS);
 
-    // pse
+    // PSE
     sai_object_id_t pseId = mgr->allocateNewObjectId(SAI_OBJECT_TYPE_POE_PSE, switchId);
     auto strPseId = sai_serialize_object_id(pseId);
     attrs[0].id = SAI_POE_PSE_ATTR_ID;
