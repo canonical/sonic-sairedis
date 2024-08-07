@@ -1,6 +1,6 @@
 SUBDIRS = . tests
 
-AM_CXXFLAGS = $(SAIINC) -I$(top_srcdir)/lib -I$(top_srcdir)/vslib
+AM_CXXFLAGS = $(SAIINC) -I$(top_srcdir)/lib -I$(top_srcdir)/vslib -Wno-overloaded-virtual
 
 if SAIVS
 SAILIB=-L$(top_srcdir)/vslib/.libs -lsaivs

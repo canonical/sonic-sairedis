@@ -94,10 +94,10 @@ libsairedis_la_SOURCES = \
 						 sai_redis_dash_meter.cpp
 
 libSaiRedis_a_CPPFLAGS = $(CODE_COVERAGE_CPPFLAGS)
-libSaiRedis_a_CXXFLAGS = $(DBGFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS_COMMON) $(CODE_COVERAGE_CXXFLAGS)
+libSaiRedis_a_CXXFLAGS = $(DBGFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS_COMMON) $(CODE_COVERAGE_CXXFLAGS) -Wno-overloaded-virtual
 
 libsairedis_la_CPPFLAGS = $(CODE_COVERAGE_CPPFLAGS)
-libsairedis_la_CXXFLAGS = $(DBGFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS_COMMON) $(CODE_COVERAGE_CXXFLAGS)
+libsairedis_la_CXXFLAGS = $(DBGFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS_COMMON) $(CODE_COVERAGE_CXXFLAGS) -Wno-overloaded-virtual
 libsairedis_la_LIBADD = -lhiredis -lswsscommon libSaiRedis.a $(CODE_COVERAGE_LIBS)
 
 bin_PROGRAMS = tests
