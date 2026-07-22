@@ -1,0 +1,26 @@
+Description: Disable Doxygen autolinking for SAI metadata generation
+ Doxygen 1.14 and later autolinks type names inside the SAI @xmlonly
+ aliases, wrapping them in <ref> elements.  meta/parse.pl cannot parse those
+ elements and reports invalid concatenated types.  Disabling autolinking
+ restores the plain-text XML emitted by older Doxygen releases.
+Origin: vendor, Canonical
+Forwarded: not-needed
+Author: Sheldon Qi <sheldon.qi@canonical.com>
+Last-Update: 2026-07-22
+---
+ a/meta/Doxyfile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta/Doxyfile b/meta/Doxyfile
+index 4900fd9..c10de26 100644
+--- a/meta/Doxyfile
++++ b/meta/Doxyfile
+@@ -303,7 +303,7 @@ MARKDOWN_SUPPORT       = YES
+ # or globally by setting AUTOLINK_SUPPORT to NO.
+ # The default value is: YES.
+
+-AUTOLINK_SUPPORT       = YES
++AUTOLINK_SUPPORT = NO
+
+ # If you use STL classes (i.e. std::string, std::vector, etc.) but do not want
+ # to include (a tag file for) the STL sources as input, then you should set this

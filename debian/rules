@@ -55,22 +55,20 @@ endif
 #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
 
 override_dh_auto_configure:
-	# resolute: doxygen >=1.14 wraps type names in <ref> cross-ref elements in
-	# the generated XML, which SAI's parse.pl cannot parse (mangles <ref> into
-	# bogus type values like "boolsai_acl_field_data_t" -> 2199 type errors).
-	# Doxygen <=1.13 (trixie 1.9.8) emits plain text. Disable AUTOLINK_SUPPORT
-	# so doxygen outputs plain-text type values. In-tree patch: SAI submodule
-	# stays at upstream v1.18.1 (c67f1152), this sed re-applies the workaround
-	# at build time only when doxygen >= 1.14.
-	# Version boundary verified from doxygen source: 1.13.0 docparser.cpp:776
-	# uses a local bool (xmlonly verbatim = plain text); 1.14.0 :2014 sets
-	# parser->context.autolinkSupport from config, xmlonly content goes
-	# through handleLinkedWord autolink (=> <ref>). AUTOLINK_SUPPORT=NO makes
-	# context.autolinkSupport false (1.14.0 :788) -> skip autolink -> plain text.
+	# Doxygen >=1.14 autolinks type names inside SAI's @xmlonly aliases, which
+	# produces <ref> elements that meta/parse.pl cannot parse.  Keep the nested
+	# SAI gitlink at upstream v1.18.1 and apply the sairedis-owned compatibility
+	# patch only where the newer Doxygen behavior is present.
 	@if dpkg --compare-versions "$$(doxygen -v 2>/dev/null)" ge 1.14 2>/dev/null; then \
-	  sed -i 's/^AUTOLINK_SUPPORT *= *YES/AUTOLINK_SUPPORT = NO/' SAI/meta/Doxyfile; \
+	  patch -d SAI -p1 --fuzz=0 \
+	    < debian/patches/disable-doxygen-autolink.patch; \
 	fi
 	dh_auto_configure -- ${SWSS_COMMON_CONFIG} $(configure_opts) $(DEB_CONFIGURE_EXTRA_FLAGS)
+
+override_dh_auto_clean:
+	@patch -d SAI -R -p1 --fuzz=0 --forward \
+	  < debian/patches/disable-doxygen-autolink.patch || true
+	dh_auto_clean
 
 override_dh_install:
 ifneq ($(filter rpc,$(DEB_BUILD_PROFILES)),)
