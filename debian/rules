@@ -55,10 +55,8 @@ endif
 #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
 
 override_dh_auto_configure:
-	# Doxygen >=1.14 autolinks type names inside SAI's @xmlonly aliases, which
-	# produces <ref> elements that meta/parse.pl cannot parse.  Keep the nested
-	# SAI gitlink at upstream v1.18.1 and apply the sairedis-owned compatibility
-	# patch only where the newer Doxygen behavior is present.
+	# Doxygen >=1.14 breaks SAI's meta/parse.pl; apply the compatibility patch only
+	# for that range (see debian/patches/disable-doxygen-autolink.patch).
 	@if dpkg --compare-versions "$$(doxygen -v 2>/dev/null)" ge 1.14 2>/dev/null; then \
 	  patch -d SAI -p1 --fuzz=0 \
 	    < debian/patches/disable-doxygen-autolink.patch; \

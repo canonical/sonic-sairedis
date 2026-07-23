@@ -156,6 +156,7 @@ CXXFLAGS_COMMON+=" -ansi"
 CXXFLAGS_COMMON+=" -fPIC"
 CXXFLAGS_COMMON+=" -pipe"
 CXXFLAGS_COMMON+=" -std=c++17"
+# resolute: libstdc++ no longer transitively pulls these in -> force-include; -Wno-error=maybe-uninitialized is an LTO false-positive on the Buffer ctor
 CXXFLAGS_COMMON+=" -include cstdint"
 CXXFLAGS_COMMON+=" -include sstream"
 CXXFLAGS_COMMON+=" -include string"
